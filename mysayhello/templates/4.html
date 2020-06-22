@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+
+    function ready() {
+        var url = base_path + "console/cfg/getBaseLayers/" + configId;
+        $.ajax({
+            url: url,
+            type: "get",
+            dataType: "json",
+            success: function (result) {
+                //生成之前先清空tr,防止AJAX异步加载重复生成
+                $("#lot tr").remove();
+
+                var length = result.length;
+                for (var i = 0; i < length; i++) {
+                    var name = result[i].name; //服务名称
+                    var alias = result[i].alias;//服务别名
+                    var type = result[i].type;//服务类型
+                    var year = result[i].year;//年份
+                    var url = result[i].url;//服务地址
+                    var visible = result[i].visible;//是否可见
+                    var id = result[i].id;//id
+                    serviceIdArray[i] = id;//此处将id塞给serviceIdArray，用于判断是否添加。
+                    var str = "";
+                    if (visible == true) {
+                        //生成tr
+                        str += '<tr id = "';
+                        str += id;
+                        str += '"';
+                        str += ' class="lot_box"> <td>';
+                        str += i + 1;
+                        str += '</td> <td>';
+                        str += name;
+                        str += '</td> <td>';
+                        str += alias;
+                        str += '</td> <td>';
+                        str += type;
+                        str += '</td> <td>';
+                        str += year;
+                        str += '</td> <td>';
+                        str += url;
+                        str += '</td> <td>';
+                        str += '<input id="';
+                        str += id;
+                        str += '"';
+                        str += 'type="checkbox" checked="true" οnchange="modifyService(this.id);"/>';
+                        str += '</td> <td> <input id="';
+                        str += id;
+                        str += '"';
+                        str += 'type="button" value="编辑" οnclick="editTd(this.id)"/>';
+                        str += '</td> <td>';
+                        str += '<button class="rosy" id="';
+                        str += id;
+                        str += '"';
+                        str += ' οnclick="deleteService(this.id);">';
+                        str += '<img src="static/img/del14.png"></button>';
+                        str += '</td> </tr>';
+                    } else {
+                        //生成tr
+                        str += '<tr id = "';
+                        str += id;
+                        str += '"';
+                        str += ' class="lot_box"> <td>';
+                        str += i + 1;
+                        str += '</td> <td>';
+                        str += name;
+                        str += '</td> <td>';
+                        str += alias;
+                        str += '</td> <td>';
+                        str += type;
+                        str += '</td> <td>';
+                        str += year;
+                        str += '</td> <td>';
+                        str += url;
+                        str += '</td> <td>';
+                        str += '<input id="';
+                        str += id;
+                        str += '"';
+                        str += 'type="checkbox" οnchange="modifyService(this.id);"/>';
+                        str += '</td> <td> <input id="';
+                        str += id;
+                        str += '"';
+                        str += 'type="button" value="编辑" οnclick="editTd(this.id)"/>';
+                        str += '</td> <td>';
+                        str += '<button class="rosy" id="';
+                        str += id;
+                        str += '"';
+                        str += ' οnclick="deleteService(this.id);">';
+                        str += '<img src="static/img/del14.png"></button>';
+                        str += '</td> </tr>';
+                    }
+                    var $tr = $(str);
+                    $("#lot").append($tr);
+                }
+            }
+        });
+    }
+
+    //修改table行内元素(td)
+    function editTd(id) {
+        //选中编辑按钮的时候,把这行指定的几个td变成文本框
+        var b = $("input[type='button'][id='" + id + "']").parent(); //td
+        var a = b.siblings(); //td的兄弟节点
+        if (a[1].children.length === 0) {
+            a[1].innerHTML = "<input type='text' value='" + a[1].innerText + "'/>";
+        }
+        if (a[2].children.length === 0) {
+            a[2].innerHTML = "<input type='text' value='" + a[2].innerText + "'/>";
+        }
+        if (a[3].children.length === 0) {
+            a[3].innerHTML = "<input type='text' value='" + a[3].innerText + "'/>";
+        }
+        //将编辑改成 保存和取消两个按钮
+        b[0].innerHTML = "<input id='" + id + "' type='button' οnclick='saveEditTd(this.id);' value='保存'/><input type='button' οnclick='resertEditTd();' value='取消'/>";
+
+        //以下注掉的都是在网上找的参考。
+   /*alert(a[0].getText());
+   var $this = $(this).index();
+   alert($this);*/
+
+   /*$('input[type="button"]').on('click', function(){
+      var $this = $(this).parent().parent();//tr
+      ready();
+   });*/
+
+   /*var $ = function(node) {
+      return typeof node == "string" ? document.getElementById(node) : node;
+   }
+   var $1 = function(node, parent){
+      var nd = document.createElement(node);
+      if(parent) parent.appendChild(nd);
+      return nd;
+   }
+   /!** 绑定事件流 *!/
+   var bind = function(obj, eventName, funcionName){
+      if(obj.addEventListener){
+         obj.addEventListener(eventName, funcionName,false);
+      }else if(obj.attachEvent) {
+         obj.attachEvent("on" + eventName, funcionName);
+      }else{
+         obj["on" + eventName] = funcionName;
+      }
+   };
+
+   var fulltable = function(tbody, data){
+      var pd = data.data;
+      var column = data.column;
+      for(var i=0, len=data.rows; i<len; i++){
+         var tr = $1("tr", tbody);
+         var cd = pd[i];
+         for(var j=0,jlen=column.length; j<jlen; j++){
+            var td = $1("td", tr);
+            td.innerHTML = cd[column[j]];//innerText不兼容火狐，可以自己写innerText和textContent的兼容，这里就直接用innerHTML了
+         }
+      }
+   }
+   var littlehow_edit_table = function(tbody, ev){
+      this.tbody = $(tbody);
+      this.event = ev ? ev : "click";//默认为单机事件
+      this.init = function(data) {//data可以是undefined
+         if(data) {
+            fulltable(this.tbody, data);
+         }
+         //调用可编辑
+         this.edit();
+      }
+      this.edit = function(){
+         var tds = this.tbody.getElementsByTagName("td");
+         for(var i=0,len=tds.length; i<len; i++){
+            bind(tds[i], this.event, this.click);
+         }
+      }
+      this.click = function(){
+         //alert(this.children.length);
+         if(this.children.length > 0) return;
+         var v = this.innerHTML;
+         this.innerHTML = "";
+         var input = $1("input", this);
+         input.type = "text";
+         input.value = v;
+         input.focus();//光标聚集
+         bind(input, "blur", blur);
+      }
+      var blur = function(){
+         var v = this.value;
+         this.parentNode.innerHTML = v;
+      }
+   }
+   window.$$ = function(id, ev){
+      return new littlehow_edit_table(id, ev);
+   };*/
+
+   /*$('.editable').handleTable({
+      "handleFirst" : true,
+      "cancel" : " <span class='glyphicon glyphicon-remove'></span> ",
+      "edit" : " <span class='glyphicon glyphicon-edit'></span> ",
+      "add" : " <span class='glyphicon glyphicon-plus'></span> ",
+      "save" : " <span class='glyphicon glyphicon-saved'></span> ",
+      "confirm" : " <span class='glyphicon glyphicon-ok'></span> ",
+      "operatePos" : -1,
+      "editableCols" : [2,3,4],
+      "order": ["add","edit"],
+      "saveCallback" : function(data, isSuccess) { //这里可以写ajax内容，用于保存编辑后的内容
+         //data: 返回的数据
+         //isSucess: 方法，用于保存数据成功后，将可编辑状态变为不可编辑状态
+         var flag = true; //ajax请求成功（保存数据成功），才回调isSuccess函数（修改保存状态为编辑状态）
+         if(flag) {
+            isSuccess();
+            alert(data + " 保存成功");
+         } else {
+            alert(data + " 保存失败");
+         }
+
+         return true;
+      },
+      "addCallback" : function(data,isSuccess) {
+         var flag = true;
+         if(flag) {
+            isSuccess();
+            alert(data + " 增加成功");
+         } else {
+            alert(data + " 增加失败");
+         }
+      },
+      "delCallback" : function(isSuccess) {
+         var flag = true;
+         if(flag) {
+            isSuccess();
+            alert("删除成功");
+         } else {
+            alert("删除失败");
+         }
+      }
+   });*/
+
+   /*//dom创建文本框
+   var input = document.createElement("input");
+   input.type="text" ;
+   //得到当前的单元格
+   var currentCell ;
+   function editCell(event) {
+      if(event==null) {
+         currentCell=window.event.srcElement;
+      }
+      else {
+         currentCell=event.target;
+      }
+      //根据Dimmacro 的建议修定下面的bug 非常感谢
+      if(currentCell.tagName=="TD"){
+         //用单元格的值来填充文本框的值
+         input.value=currentCell.innerHTML;
+         //当文本框丢失焦点时调用last
+         input.οnblur=last;
+         input.οndblclick=last;
+         currentCell.innerHTML="";
+         //把文本框加到当前单元格上.
+         currentCell.appendChild(input);
+         //根据liu_binq63 的建议修定下面的bug 非常感谢
+         input.focus();
+      }
+   }
+   function last() {
+      //充文本框的值给当前单元格
+      currentCell.innerHTML = input.value;
+   }
+   //最后为表格绑定处理方法.
+   document.getElementById("table").οndblclick=editCell;*/
+
+   /*var ttr = $(this).val()=="编辑"?"确定":"编辑";
+
+   $(this).val(ttr);   // 按钮被点击后，在“编辑”和“确定”之间切换
+
+   $(this).parent().siblings("td").each(function() {  // 获取当前行的其他单元格
+
+      var obj_text = $(this).find("input:text");    // 判断单元格下是否有文本框
+
+      if(!obj_text.length)   // 如果没有文本框，则添加文本框使之可以编辑
+
+         $(this).html("<input type='text' value='"+$(this).text()+"'>");
+
+      else   // 如果已经存在文本框，则将其显示为文本框修改的值
+
+         $(this).html(obj_text.val());
+
+   });*/
+
+   /*$('input[type="button"]').on('click', function(){
+      var $this = $(this);
+      var $td_arr = $this.parent().html('保存').prevAll('td');
+      $.each($td_arr, function(){
+         var $td = $(this);
+         $td.html('<input type="text" value="'+$td.html()+'">');
+      });
+   });*/
+
+}
+3）
+
+//取消editTd编辑
+function resertEditTd() {
+   ready(); //此方法是自己写的，局部刷新页面，重新加载数据
+}
+//保存editTd编辑
+function saveEditTd(id) {
+   var a = $("input[type='button'][id='"+id+"']").parent().siblings(); //td的兄弟节点
+   var td_name = a[1].children[0].value; //服务名称
+   var td_alias = a[2].children[0].value; //服务别名
+   var td_type = a[3].children[0].value; //服务类型
+
+   var url = base_path+"console/cfg/saveEditTd";
+   $.ajax({
+      url:url,
+      type:"post",
+      data:{
+         "td_name":td_name,
+         "td_alias":td_alias,
+         "td_type":td_type,
+         "id":id,
+         "tpl":configId
+      },
+      datatype:"json",
+      success:function (result) {
+         ready(); //此方法是自己写的，局部刷新页面，重新加载数据
+      }
+   });
+}
+
+
+</script>
+</html>
