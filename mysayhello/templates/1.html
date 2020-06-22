@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="click">改变内bai容du</button>
+<div id="t">要改变的zhi内容</div>
+
+</body>
+<script type="text/javascript">
+document.getElementById("click").onclick=function(){
+var text=document.getElementById("t");
+var val=text.innerHTML;
+text.innerHTML="<input type='text' id='n' value="+val+" />";
+document.getElementById("n").addEventListener("blur",function(e){
+text.innerHTML=document.getElementById("n").value;
+});
+};
+</script>
+</html>
