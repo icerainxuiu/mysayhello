@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="content"></div>
+<button id="btn_adminc">点击</button>
+<button class="tablelook">
+look
+</button>
+</body>
+<script>
+    function navlist(){
+    $("#content").html(
+        "<table class='table table-border table-bordered table-hover tablelook'><tbody><tr><th>标题</th><th>图标</th><th>网址</th><th>文字</th><th>操作</th></tr></tbody></table>"
+    );
+    $.ajax({
+        type: "get",
+        url: "/nav/u/navlist",
+        dataType: "json",
+        success: function (response) {
+            var datajs = response.data;
+            for (let index = 0; index < datajs.length; index++) {
+                $(".tablelook").append(
+                    "<tr>" +
+                    "<td>" + datajs[index].title + "</td>" +
+                    "<td><img style='width:20px' src=" + datajs[index].img + "></td>" +
+                    "<td><p style='overflow: hidden;'>" + datajs[index].href + "</p></td>" +
+                    "<td>" + datajs[index].alt + "</td>" +
+                    "<td>" +
+                    "<a href='javascript:;' data_id='" + datajs[index].id + "'>改</a>" +
+                    "<span> | </span>" +
+                    "<a href='javascript:;' data_id='" + datajs[index].id + "'>删</a>" +
+                    "</td>" +
+                    "</tr>"
+                );
+            }
+            $(".tablelook a:odd").click(function (e) {
+                e.preventDefault();
+                tan('提示！', '我要删除了噢~');
+                $(".modal-footer .btn").click(function () {
+                    $.ajax({
+                        type: "post",
+                        url: "/nav/u/del",
+                        data: "id=" + $(".tablelook a:odd").attr('data_id'),
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.state) {
+                                info('删除成功！');
+                                navlist();
+                            } else {
+                                info('删除失败');
+                            }
+                        }
+                    });
+
+                });
+            });
+
+        }
+    });
+}
+$("#btn_adminc").click(function (e) {
+    e.preventDefault();
+    navlist();
+});
+</script>
+</html>
