@@ -1,0 +1,174 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .test {
+            width: 1000px;
+            height: 600px;
+            margin: 0 auto;
+
+        }
+
+        .test ul {
+            list-style: none;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .test ul li {
+            width: 100px;
+            float: left;
+            text-align: center;
+        }
+
+        .test p {
+            display: block;
+            cursor: pointer;
+        }
+
+        .box {
+            width: 1000px;
+            height: 400px;
+            background: #E7FB4A;
+            clear: both;
+        }
+
+        #box1 {
+            background-color: rgb(245,245,245);
+        }
+
+        #box2 {
+            background-color: rgb(245,245,245);
+            display: none;
+
+        }
+
+        #box3 {
+            background-color: rgb(245,245,245); display: none;
+        }
+
+        .test p:hover {
+            background: #4874FF;
+        }
+
+        .btn1 {
+            background: #5C47F3;
+            display: block;
+        }
+
+        .btn2 {
+            background: #4874FF;
+            display: block;
+        }
+
+        table {
+            border: 1px solid #ccc;
+            width: 80%;
+            padding: 0;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin: 0 auto;
+        }
+
+        table tr {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+<div class="test">
+    <ul>
+        <li><p id="1" class="btn2">导航一</p></li>
+        <li><p id="2" class="btn1">导航二</p></li>
+        <li><p id="3" class="btn1">导航三</p></li>
+    </ul>
+    <div class="box" id="box1">这是第一个导航显示的内容</div>
+    <div class="box" id="box2">这是第二个导航显示的内容</div>
+    <div class="box" id="box3">
+        <form action="">
+            <table width="800px" align="center">
+                <tr>
+                    <th>111</th>
+                    <th>222</th>
+                    <th>333</th>
+                </tr>
+                <tr>
+                    <td>111</td>
+                    <td>111</td>
+                    <td>111</td>
+                </tr>
+                <tr>
+                    <td>111</td>
+                    <td>111</td>
+                    <td>111</td>
+                </tr>
+                <tr>
+                    <td>111</td>
+                    <td>111</td>
+                    <td>111</td>
+                </tr>
+                <tr>
+                    <td>111</td>
+                    <td>111</td>
+                    <td>111</td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+
+    window.onload = function () {
+        var arr = document.getElementsByTagName('p');
+        for (var i = 0; i < arr.length; i++) {
+            arr[i].onclick = function () {
+                if (this.id == '1') {
+                    document.getElementById("box1").style.display = 'block';
+                    document.getElementById("box2").style.display = 'none';
+                    document.getElementById("box3").style.display = 'none';
+                } else if (this.id == '2') {
+                    document.getElementById("box1").style.display = 'none';
+                    document.getElementById("box2").style.display = 'block';
+                    document.getElementById("box3").style.display = 'none';
+                } else {
+                    document.getElementById("box1").style.display = 'none';
+                    document.getElementById("box2").style.display = 'none';
+                    document.getElementById("box3").style.display = 'block';
+                }
+                //this是当前激活的按钮，在这里可以写对应的操作
+                if (this.className == 'btn1') {
+                    this.className = 'btn2';
+                    var name = this.id;
+                    var btn = document.getElementsByClassName('btn2');
+                    for (var j = 0; j < btn.length; j++) {
+                        if (btn[j].id != name) {
+                            btn[j].className = 'btn1';
+                        }
+                    }
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>
