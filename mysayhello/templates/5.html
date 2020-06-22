@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<td class="release_people_name" data-number="<{$item[number]}>"><{$item[people_name]}></td>
+</body>
+
+<script>
+    var $newNode=$("<input type='text' id='release_people_name_input' style='width:150px;' maxlength='20' onclick='doSomething(this,event)'>");
+var $oldTdObj="";   //用于保存TD对象
+$(function(){
+    $(".release_people_name").click(function(){
+        var id = $(this).data('number');
+        //获取当前TD的值
+        var $oldValue=$(this).text();
+        console.log('$oldValue');
+        console.log($oldValue);
+        //是否存在input
+        var $ifInput=$(this).children().is('input');
+        if($oldTdObj!=""){
+            var newValue=$("#release_people_name_input").val();
+            console.log('newValue');
+            console.log(newValue);
+            if(typeof(newValue)!="undefined"){
+                setPeopleName(id, newValue);
+                $oldTdObj.text(newValue);
+            }
+        }
+        <!--如果TD单元格中不存在input，则添加-->
+        if(!$ifInput){
+            $(this).text('');
+            $oldTdObj=$(this);
+            $(this).append($newNode);
+            $newNode.val($oldValue);
+            $newNode.focus();
+        }
+    });
+});
+<!--验证是否为正整数-->
+function setPeopleName(id, name){
+    $.post('POST的服务端接收地址',{people_name:name,number:id},function (result) {
+        result = $.parseJSON(result);
+        $.pkAlert(result.msg);
+    });
+}
+<!--js阻止冒泡事件-->
+function doSomething(obj,evt){
+    var e=(evt)?evt:window.event;
+    if(window.event){
+        e.cancelBubble=true;
+    }else{
+        e.stopPropagation();
+    }
+}
+</script>
+</html>
