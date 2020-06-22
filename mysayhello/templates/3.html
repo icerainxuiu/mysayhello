@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="btn-group">
+    <button class="btn sbold green" id="edit" οnclick="">
+        　　　　<span class="ladda-label">编辑</span>
+    </button>
+</div>
+<div class="btn-group">
+    <button class="btn sbold green" id="save" οnclick="">
+        　　　　<span class="ladda-label">保存</span>
+    </button>
+</div>
+
+<form action="" class="horizontal-form" method="post" id="saveForm" autocomplete="off">
+    <table class="table table-striped table-bordered table-hover table-checkable order-column"
+           id="table1">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>编号</th>
+            <th>名称</th>
+            <th>编码</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="list : ${fileList}" class="trs find">
+            <td class="dbclicktd" th:text="${list.temp_id}">序号</td>
+            <td class="dbclicktd" th:text="${list.temp_number}">编号</td>
+            <td class="dbclicktd" th:text="${list.temp_name}">名称</td>
+            <td class="dbclicktd" th:text="${list.temp_code}">编码</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-striped table-bordered table-hover table-checkable order-column"
+           id="tableto">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>合同编号</th>
+            <th>企业名称</th>
+            <th>企业编码</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr id="editExcel" th:each="list : ${rightsFailList}" class="trs editExcel">
+            <td class="dbclicktd"><input th:value="${list.temp_id}" name="temp_id"/></td>
+            <td class="dbclicktd"><input th:value="${list.temp_number}" name="temp_number"/></td>
+            <td class="dbclicktd"><input th:value="${list.temp_name}" name="temp_name"/></td>
+            <td class="dbclicktd"><input th:value="${list.temp_code}" name="temp_code"/></td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+</body>
+<script>
+    $(function () {
+        var info = $("#table1_info").val();
+        $("#tableto").hide();
+        $("#tableto_info").hide();
+        $("#tableto_length").hide();
+        $("#tableto_paginate").hide();
+        $("#tableto_wrapper").hide();
+    });
+
+    $("#edit").click("click", function () {
+        $("#tableto").show();
+        $("#tableto_info").show();
+        $("#tableto_length").show();
+        $("#tableto_paginate").show();
+        $("#tableto_wrapper").show();
+        $("#table1").hide();
+        $("#table1_info").hide();
+        $("#table1_length").hide();
+        $("#table1_paginate").hide();
+        $("#table1_wrapper").hide();
+        var info = $("#table1_info").text();
+        $("#tableto_info").html(info);
+    });
+
+    $("#save").click("click", function () {
+        var ri = JSON.stringify(riList);
+        var obj = JSON.stringify($("#saveForm").serializeJson());
+        var searchServPath = "/sys/chas/aimCont";
+        var html = $("#topli").html();
+        var tb = $("#loadhtml");
+        tb.html(CommnUtil.loadingImg());
+        tb.load(rootPath + searchServPath, {objJson: obj, riJson: ri}, function () {
+            $("#topli").html(html);
+        });
+
+    });
+</script>
+</html>
